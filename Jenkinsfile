@@ -97,13 +97,30 @@ pipeline {
                 }
             }
         }
-        stage('Build app image') {
+        stage('Build App Image') {
           steps {
             script {
-              dockerImage = docker.build registry + ":$BUILD_NUMBER"
+              dockerImage = docker.build registry + ":V$BUILD_NUMBER"
             }
           }
         }
+        stage('Upload Images'){
+          steps{
+            scripts {
+              dockerImage.withRegistry('', registryCredential) {
+                dockerImage.push("V$BUILD_NUMBER")
+                dockerImage.push('latest')
+              }
+            }
+          }
+        }
+
+        stage('Remove Unused docker image') {
+          steps{
+            sh "docker rmi $registry:V$BUILD_NUMBER"
+          }
+        }
+
 
 
         stage('Kubernetes Deploy') {
