@@ -97,6 +97,15 @@ pipeline {
                 }
             }
         }
+        stage('Build app image') {
+          steps {
+            script {
+              dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            }
+          }
+        }
+
+
         stage('Kubernetes Deploy') {
 	  agent { label 'KOPS' }
             steps {
