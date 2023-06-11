@@ -121,8 +121,6 @@ pipeline {
           }
         }
 
-
-
         stage('Kubernetes Deploy') {
 	  agent { label 'KOPS' }
             steps {
